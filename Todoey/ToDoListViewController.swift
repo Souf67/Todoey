@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
 
-    let itemArray = ["Find Mike", "Buy Eggos", "Destory Demogorgon"]
+    var itemArray = ["Find Mike", "Buy Eggos", "Destory Demogorgon"]
    
     
     override func viewDidLoad() {
@@ -38,8 +38,11 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        // Pour changer l'animation lors de la selection
         tableView.deselectRow(at: indexPath, animated: true)
         
+        
+        // Pour mettre le checkmark au clic
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
@@ -57,6 +60,41 @@ class ToDoListViewController: UITableViewController {
         
     }
     
-
+    @IBAction func addButtonItem(_ sender: UIBarButtonItem) {
+        
+        
+        var textField = UITextField()
+        
+        // Initialise le popup, on donne un titre
+        let alert = UIAlertController(title: "Nouvelle tâche", message: "", preferredStyle: .alert)
+        
+        // Initialise le bouton en dessous du popup
+        let action = UIAlertAction(title: "Ajouter la tâche", style: .default) { (action) in
+            
+            // Ce qui se passe quand l'utilisateurs clic sur le boutton add dans l'alerte
+            
+            // Ajout de la nouvelle tache
+            self.itemArray.append(textField.text!)
+            
+            // Obligatoire pour mettre à jour les nouvelles données
+            self.tableView.reloadData()
+          
+        }
+        // Pour ajouter le textField dans le popup
+            alert.addTextField { (alertTextField) in
+                alertTextField.placeholder = "Nouvelle tâche"
+                textField = alertTextField
+        }
+        
+       
+        // La partie du haut
+        present(alert, animated: true, completion: nil)
+        // La partie du bas, le bouton
+        alert.addAction(action)
+        
+        
+        
+    }
+    
 }
 
