@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
 
-    var itemArray = ["Find Mike", "Buy Eggos", "Destory Demogorgon"]
+    var itemArray = [Item]()
    
     // 1/3 Pour le persistent local data storage
     
@@ -19,13 +19,29 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        let newItem = Item()
+        newItem.title = "Find Mike"
+        itemArray.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "Fake nEWS"
+        itemArray.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "FILS DE Pite"
+        itemArray.append(newItem3)
+        
+       
+        
+        
         // 3/3 Dernière étape pour le persistent storage
         
-        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
             
-            itemArray = items
+         itemArray = items
             
-        }
+       }
         
     }
     
@@ -38,9 +54,15 @@ class ToDoListViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
+        let item = itemArray[indexPath.row]
         
-        cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = itemArray[indexPath.row].title
+        
+         // Pour mettre le checkmark au clic
+        cell.accessoryType = item.done ? .checkmark : .none
     
+        
+       
        
         
         return cell
@@ -52,21 +74,12 @@ class ToDoListViewController: UITableViewController {
         // Pour changer l'animation lors de la selection
         tableView.deselectRow(at: indexPath, animated: true)
         
+         // Pour mettre le checkmark au clic
         
-        // Pour mettre le checkmark au clic
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-            
-            print(itemArray[indexPath.row])
-            
-        } else {
-            
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-            
-            print(itemArray[indexPath.row])
-        }
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
+
+         tableView.reloadData()
         
         
     }
@@ -85,7 +98,11 @@ class ToDoListViewController: UITableViewController {
             // Ce qui se passe quand l'utilisateurs clic sur le boutton add dans l'alerte
             
             // Ajout de la nouvelle tache
-            self.itemArray.append(textField.text!)
+            
+            let newItem = Item()
+            newItem.title = textField.text!
+            
+            self.itemArray.append(newItem)
             
             // 2/3 Method pour sauvegarder les données si l'app crash (persistent local data storage)
             self.defaults.set(self.itemArray, forKey: "TodoListArray")
