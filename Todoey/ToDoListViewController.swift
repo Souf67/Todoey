@@ -12,9 +12,20 @@ class ToDoListViewController: UITableViewController {
 
     var itemArray = ["Find Mike", "Buy Eggos", "Destory Demogorgon"]
    
+    // 1/3 Pour le persistent local data storage
+    
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 3/3 Dernière étape pour le persistent storage
+        
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            
+            itemArray = items
+            
+        }
         
     }
     
@@ -75,6 +86,10 @@ class ToDoListViewController: UITableViewController {
             
             // Ajout de la nouvelle tache
             self.itemArray.append(textField.text!)
+            
+            // 2/3 Method pour sauvegarder les données si l'app crash (persistent local data storage)
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            
             
             // Obligatoire pour mettre à jour les nouvelles données
             self.tableView.reloadData()
